@@ -19,6 +19,11 @@ func init() {
 func main() {
 	flag.Parse()
 	session := connect(url)
+	r.Branch(
+		r.DB("test").TableList().Contains("insert_test"),
+		r.DB("test").Table("insert_test").Delete(),
+		r.DB("test").TableCreate("insert_test"),
+	).Run(session)
 	start := time.Now()
 	for i := 0; i < 1000; i++ {
 		insert(session)
