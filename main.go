@@ -1,12 +1,31 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"log"
+	"time"
 
 	r "gopkg.in/dancannon/gorethink.v2"
 )
 
+var (
+	url string
+)
+
+func init() {
+	flag.StringVar(&url, "url", "localhost:28015", "-url url:port")
+}
 func main() {
+	flag.Parse()
+	session := connect(url)
+	start := time.Now()
+	for i := 0; i < 1000; i++ {
+		insert(session)
+	}
+	elapsed := time.Since(start)
+	sec := elapsed / time.Second
+	fmt.Printf("writes/sec %d", 1000/sec)
 }
 
 func connect(url string) *r.Session {
