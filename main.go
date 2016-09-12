@@ -47,5 +47,8 @@ func insert(session *r.Session) {
 		Value: "test",
 	}
 
-	r.DB("test").Table("insert_test").Insert(insertData).RunWrite(session)
+	_, err := r.DB("test").Table("insert_test").Insert(insertData).RunWrite(session)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
