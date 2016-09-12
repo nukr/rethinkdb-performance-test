@@ -10,11 +10,13 @@ import (
 )
 
 var (
-	url string
+	url   string
+	count int
 )
 
 func init() {
 	flag.StringVar(&url, "url", "localhost:28015", "-url url:port")
+	flag.IntVar(&count, "count", 1000, "-count 1000")
 }
 func main() {
 	flag.Parse()
@@ -25,12 +27,12 @@ func main() {
 		r.DB("test").TableCreate("insert_test"),
 	).Run(session)
 	start := time.Now()
-	for i := 0; i < 1000; i++ {
+	for i := 0; i < count; i++ {
 		insert(session)
 	}
 	elapsed := time.Since(start)
-	sec := elapsed / time.Second
-	fmt.Printf("writes/sec %d", 1000/sec)
+	sec := int(elapsed / time.Second)
+	fmt.Printf("writes/sec %d\n", count/sec)
 }
 
 func connect(url string) *r.Session {
