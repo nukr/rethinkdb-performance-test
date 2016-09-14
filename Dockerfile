@@ -1,3 +1,3 @@
 FROM scratch
 
-COPY rethinkdb-performance-test /rethinkdb-performance-test
+COPY rethinkdb_perf_tool /rethinkdb_perf_tool
