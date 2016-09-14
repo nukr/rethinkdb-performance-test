@@ -12,10 +12,12 @@ import (
 var (
 	url   string
 	count int
+	dur   string
 )
 
 func init() {
 	flag.StringVar(&url, "url", "localhost:28015", "-url url:port")
+	flag.StringVar(&dur, "dur", "hard", "-dur soft")
 	flag.IntVar(&count, "count", 1000, "-count 1000")
 }
 func main() {
@@ -28,7 +30,7 @@ func main() {
 	).Run(session)
 	start := time.Now()
 	for i := 0; i < count; i++ {
-		insert(session)
+		insert(session, dur)
 	}
 	elapsed := time.Since(start)
 	sec := int(elapsed / time.Second)
@@ -45,7 +47,7 @@ func connect(url string) *r.Session {
 	return session
 }
 
-func insert(session *r.Session) {
+func insert(session *r.Session, dur string) {
 	insertData := struct {
 		Name  string
 		Value string
@@ -54,7 +56,11 @@ func insert(session *r.Session) {
 		Value: "test",
 	}
 
-	_, err := r.DB("test").Table("insert_test").Insert(insertData).RunWrite(session)
+	_, err := r.
+		DB("test").
+		Table("insert_test").
+		Insert(insertData, r.InsertOpts{Durability: dur}).
+		RunWrite(session)
 	if err != nil {
 		log.Fatal(err)
 	}
