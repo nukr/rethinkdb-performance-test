@@ -16,13 +16,13 @@ var (
 )
 
 func init() {
-	flag.StringVar(&url, "url", "localhost:28015", "-url url:port")
 	flag.StringVar(&dur, "dur", "hard", "-dur soft")
 	flag.IntVar(&count, "count", 1000, "-count 1000")
 }
 func main() {
 	flag.Parse()
-	session := connect(url)
+	urls := flag.Args()
+	session := connect(urls)
 	r.Branch(
 		r.DB("test").TableList().Contains("insert_test"),
 		r.DB("test").Table("insert_test").Delete(),
@@ -37,9 +37,9 @@ func main() {
 	fmt.Printf("writes/sec %d\n", count/sec)
 }
 
-func connect(url string) *r.Session {
+func connect(urls []string) *r.Session {
 	session, err := r.Connect(r.ConnectOpts{
-		Address: url,
+		Addresses: urls,
 	})
 	if err != nil {
 		log.Fatal(err)
